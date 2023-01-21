@@ -66,6 +66,7 @@ public class GameBoard{
     const int COLUMNS = 7;
     const int ROWS = 6;
     const int WIN = 4;
+    const int NEIGHBORINGTOKENS = 3;
     const int BOARDWIDTH = 29;
     const string NEWLINE = "\n";
 
@@ -87,7 +88,7 @@ public class GameBoard{
         col5 = new List<int>(){0,0,0,0,0,0};
         col6 = new List<int>(){0,0,0,0,0,0};
         col7 = new List<int>(){0,0,0,0,0,0};
-        _board = new List<List<int>>(){col1, col2, col3, col4, col5, col6, col7};
+        _board = new List<List<int>>{col1, col2, col3, col4, col5, col6, col7};
         var sB = new StringBuilder();
         sB.Append('-', BOARDWIDTH);
         _divider = sB.ToString();
@@ -145,36 +146,25 @@ public class GameBoard{
     }
 
     public bool checkIfPieceWon(int column, int row, int player){
-        var bestStreak = 1;
         var horz = searchHorizontal(column, row, player);
         var vert = seachVertical(column, row, player);
         var lR = seachLRDiagonal(column, row, player);
         var rL = seachRLDiagonal(column, row, player);
 
-        bestStreak = Math.Max(rL, Math.Max(lR, Math.Max(vert, Math.Max(horz, 1))));
-
-        return bestStreak >= 4;
+        return Math.Max(rL, Math.Max(lR, Math.Max(vert, Math.Max(horz, 1)))) >= WIN;
     }
 
     public int seachRLDiagonal(int column, int row, int player){
         var total = 1;
 
-        for(int i = 1; i <= 3; i++){
-            if((row + i < ROWS) && (column + i < COLUMNS)){
-                if(_board[column + i][row + i] == player){
-                    total++;
-                }
-                else {break; }  
+        for(int i = 1; i <= NEIGHBORINGTOKENS; i++){
+            if((row + i < ROWS) && (column + i < COLUMNS) && (_board[column + i][row + i] == player)){
+                total++;
             }
-        }
-
-        for(int i = 1; i <= 3; i++){
-            if((row - i >= 0) && (column - i >= 0)){
-                if(_board[column - i][row - i] == player){
-                    total++;
-                }
-                else { break; }
+            if((row - i >= 0) && (column - i >= 0) && (_board[column - i][row - i] == player)){
+                total++;
             }
+            else {break; }  
         }
 
         return total;
@@ -183,22 +173,14 @@ public class GameBoard{
     public int seachLRDiagonal(int column, int row, int player){
         var total = 1;
 
-        for(int i = 1; i <= 3; i++){
-            if((row + i < ROWS) && (column - i >= 0)){
-                if(_board[column - i][row + i] == player){
-                    total++;
-                }
-                else { break; }
+        for(int i = 1; i <= NEIGHBORINGTOKENS; i++){
+            if((row + i < ROWS) && (column - i >= 0) && (_board[column - i][row + i] == player)){
+                total++;
             }
-        }
-        
-        for(int i = 1; i <= 3; i++){
-            if((row - i >= 0) && (column + i < COLUMNS)){
-                if(_board[column + i][row - i] == player){
-                    total++;
-                }
-                else { break; }
+            else if((row - i >= 0) && (column + i < COLUMNS) && (_board[column + i][row - i] == player)){
+                total++;
             }
+            else { break; }
         }
 
         return total;
@@ -207,22 +189,14 @@ public class GameBoard{
     public int seachVertical(int column, int row, int player){
         var total = 1;
 
-        for(int i = 1; i <= 3; i++){
-            if(row + i < ROWS){
-                if(_board[column][row + i] == player){
-                    total++;
-                }
-                else { break; }
+        for (int i = 1; i <= NEIGHBORINGTOKENS; i++) {
+            if ((row + i < ROWS) && (_board[column][row + i] == player)) {
+                total++;
             }
-        }
-        
-        for(int i = 1; i <= 3; i++){
-            if(row - i >= 0){
-                if(_board[column][row - i] == player){
-                    total++;
-                }
-                else { break; }
+            else if ((row - i >= 0) && (_board[column][row - i] == player)) {
+                total++;
             }
+            else { break; }
         }
 
         return total;
@@ -231,21 +205,14 @@ public class GameBoard{
     public int searchHorizontal(int column, int row, int player){
         var total = 1;
         
-        for(int i = 1; i <= 3; i++){
-            if(column + i < COLUMNS){
-                if(_board[column + i][row] == player){
-                    total++;
-                }
-                else { break; }
+        for(int i = 1; i <= NEIGHBORINGTOKENS; i++){
+            if((column + i < COLUMNS) && (_board[column + i][row] == player)){
+                total++;
             }
-        }
-        for(int i = 1; i <= 3; i++){
-            if(column - i >= 0){
-                if(_board[column - i][row] == player){
-                    total++;
-                }
-                else { break; }
+            else if((column - i >= 0) && (_board[column - i][row] == player)){
+                total++;
             }
+            else { break; }
         }
         return total;
     }
