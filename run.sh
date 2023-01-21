@@ -1,0 +1,1 @@
+dotnet build ScratchPad.sln  && dotnet run --project ./ScratchPad
